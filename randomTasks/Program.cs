@@ -14,35 +14,45 @@ namespace randomTasks
             List<int> unsortedListInteger = new List<int>();
             Random rnd = new Random();
             System.Diagnostics.Stopwatch dog = new System.Diagnostics.Stopwatch();
-            dog.Start();
-            for (int j = 0; j < nb; j++)
-            {
-                unsortedListInteger.Add(rnd.Next( 0, 100));
-            }
-            unsortedListInteger = MergeSort(unsortedListInteger);
-            dog.Stop();
+            //dog.Start();
+            //for (int j = 0; j < nb; j++)
+            //{
+            //    unsortedListInteger.Add(rnd.Next( 0, 100));
+            //}
+            //unsortedListInteger = MergeSort(unsortedListInteger);
+            //dog.Stop();
+            //unsortedListInteger = null;
 
-           
             //Console.WriteLine(string.Join((char)32, unsortedListInteger ));
-            
-            Console.WriteLine("Elapsed time in ms :: " + dog.ElapsedMilliseconds);
-            dog.Reset();
-            dog.Start();
+
+            //Console.WriteLine("Merge sorting of {0} integers has taken {1} ms.", nb, dog.ElapsedMilliseconds);
+
             List<double> unsortedListDouble = new List<double>();
-           
-            for(int j = 0; j<nb; j++)
+            List<double> sortedListDouble = new List<double>();
+
+            
+            for (int j = 0; j < nb; j++)
             {
                 unsortedListDouble.Add(rnd.NextDouble() * 100);
             }
+            dog.Start();
+            sortedListDouble = MergeSortModD(unsortedListDouble);
+            dog.Stop();
+            Console.WriteLine("Merge sorting /MergeSortModD/ of {0} doubles has taken {1} ms.", nb, dog.ElapsedMilliseconds);
+
+            dog.Reset();
+            sortedListDouble = null;
+
+            dog.Start();        
             unsortedListDouble = Merge2(unsortedListDouble);
             dog.Stop();
             //Console.WriteLine(string.Join((char)32, unsortedListDouble));
-            
-            Console.WriteLine("Elapsed time in ms :: " + dog.ElapsedMilliseconds);
+            unsortedListDouble = null; 
+            Console.WriteLine("Merge sorting my /implementation/ of {0} doubles has taken {1} ms.", nb, dog.ElapsedMilliseconds);
         }
 
 
-
+           // Copied this implementation for integers from somewhere. 
             private static List<int> MergeSort(List<int> unsorted)
             {
                 if (unsorted.Count <= 1)
@@ -101,6 +111,66 @@ namespace randomTasks
             }
 
 
+        // Adapt the copied implementation for doubles;
+        private static List<double> MergeSortModD(List<double> unsorted)
+        {
+            if (unsorted.Count <= 1)
+                return unsorted;
+
+            List<double> left = new List<double>();
+            List<double> right = new List<double>();
+
+            int middle = unsorted.Count / 2;
+            for (int i = 0; i < middle; i++)  //Dividing the unsorted list
+            {
+                left.Add(unsorted[i]);
+            }
+            for (int i = middle; i < unsorted.Count; i++)
+            {
+                right.Add(unsorted[i]);
+            }
+
+            left = MergeSortModD(left);
+            right = MergeSortModD(right);
+            return MergeModD(left, right);
+        }
+
+        private static List<double> MergeModD(List<double> left, List<double> right)
+        {
+            List<double> result = new List<double>();
+
+            while (left.Count > 0 || right.Count > 0)
+            {
+                if (left.Count > 0 && right.Count > 0)
+                {
+                    if (left.First() <= right.First()) 
+                    {
+                        result.Add(left.First());
+                        left.Remove(left.First());      
+                    }
+                    else
+                    {
+                        result.Add(right.First());
+                        right.Remove(right.First());
+                    }
+                }
+                else if (left.Count > 0)
+                {
+                    result.Add(left.First());
+                    left.Remove(left.First());
+                }
+                else if (right.Count > 0)
+                {
+                    result.Add(right.First());
+
+                    right.Remove(right.First());
+                }
+            }
+            return result;
+        }
+
+
+        //My implementation for doubles.
         private static List<double> Merge2(List<double> unsorted)
         {
             List<double> left = new List<double>();
